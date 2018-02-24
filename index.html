@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>じゃんけん</title>
+  <style>
+    div.janken{
+      text-align: center;
+    }
+
+    .janken #com img{
+      width: 150px;
+      height: 150px;
+    }
+    .janken #player img{
+      width: 50px;
+      height: 50px;
+      border: 2px solid #FFF;
+    }
+    .janken #player img.selected{
+      transition: all 1s;
+      border: 2px solid #33A;
+    }
+  </style>
+</head>
+<body>
+  <div class="janken">
+    <p id="message">じゃんけん...</p>
+    <div id="com">
+      <img id="com_hand" src="images/mark_question.png" alt="じゃんけん...">
+    </div>
+    <div id="player">
+      <img id="player_gu" src="images/janken_gu.png" alt="グー">
+      <img id="player_choki" src="images/janken_choki.png" alt="チョキ">
+      <img id="player_pa" src="images/janken_pa.png" alt="パー">
+    </div>
+  </div>
+<script type="text/javascript">
+  var GU=1;
+  var CHOKI=2;
+  var PA=3;
+  var WIN=1;
+  var DRAW=0;
+  var LOSE=-1;
+  var setMessageByld=function(id,text) {
+    var element=document.getElementById(id);
+    element.innerText=text;
+  };
+  var updateComSelected = function() {
+    var comHand = document.getElementById('com_hand');
+    var comSelected = Math.floor(Math.random() * 3 + 1);
+    if (comSelected == GU) {
+      comHand.src = "images/janken_gu.png";
+    } else if (comSelected == CHOKI) {
+      comHand.src = "images/janken_choki.png";
+    } else {
+      comHand.src = "images/janken_pa.png";
+    }
+    return comSelected;
+  }
+  var updatePlayerSelected=function(e=null){
+    var gu=document.getElementById("player_gu");
+    var choki=document.getElementById("player_choki");
+    var pa=document.getElementById("player_pa");
+    gu.classList.remove("selected");
+    choki.classList.remove("selected");
+    pa.classList.remove("selected");
+
+    if(e!=null){
+      e.target.classList.add("selected");
+      if(e.target.id=="player_gu"){
+        return GU;
+      }else if(e.target.id=="player_choki"){
+        return CHOKI;
+      }else {
+        return PA;
+      }
+    }
+    return null;
+  }
+  var gudgeResult=function(player,com){
+    if(player==com){
+      return DRAW;
+    }else if((player==GU&&com==CHOKI)||(player==CHOKI&&com==PA)||(player==PA&&com==GU)){
+      return WIN;
+    }else{
+      return LOSE;
+    }
+  }
+  var player = document.getElementById('player');
+  player.addEventListener('click', function(e) {
+    var playerSelected=updatePlayerSelected(e);
+    var comSelected=updateComSelected();
+    var result=gudgeResult(playerSelected,comSelected);
+    //console.log(result);
+    if(result==WIN){
+      setMessageByld("message","ぽん…勝利！");
+    }else if(result==LOSE){
+      setMessageByld("message","ぽん…敗北！");
+    }else if(result==DRAW){
+      setMessageByld("message","ぽん…あいこで…");
+    }
+  });
+</script>
+</body>
+</html>
